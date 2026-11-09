@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-limiter
+  labels:
+    app.kubernetes.io/name: edge-limiter
+data:
+  config.yaml: |
+    listen: ":8080"
+    log_level: info
+    shutdown_timeout: 20s
+    tenant_header: X-Tenant-ID
+    backend:
+      type: redis
+      failure_mode: local
+      cooldown: 2s
+      redis:
+        addr: redis.default.svc.cluster.local:6379
+        timeout: 50ms
+        key_prefix: "rl:"
+    default:
+      algorithm: token_bucket
+      rate: 100
+      period: 1s
+      burst: 200
+    rules:
+      - name: login
+        route: /v1/login
+        algorithm: sliding_window_log
+        rate: 5
+        period: 1m
+      - name: acme-api
+        tenant: acme
+        algorithm: sliding_window_counter
+        rate: 1000
+        period: 1m

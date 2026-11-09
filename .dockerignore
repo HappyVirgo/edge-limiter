@@ -1,0 +1,6 @@
+.git
+.github
+deploy
+bench/RESULTS.md
+*.md
+.env

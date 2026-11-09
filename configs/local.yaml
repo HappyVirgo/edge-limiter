@@ -1,0 +1,21 @@
+# Single-process development config: in-memory backend, no Redis needed.
+listen: ":8080"
+log_level: info
+backend:
+  type: memory
+default:
+  algorithm: token_bucket
+  rate: 100
+  period: 1s
+  burst: 200
+rules:
+  - name: login
+    route: /v1/login
+    algorithm: sliding_window_log
+    rate: 5
+    period: 1m
+  - name: acme-api
+    tenant: acme
+    algorithm: sliding_window_counter
+    rate: 1000
+    period: 1m

@@ -1,0 +1,5 @@
+region             = "us-east-1"
+vpc_id             = "vpc-0123456789abcdef0"
+public_subnet_ids  = ["subnet-aaaaaaaaaaaaaaaaa", "subnet-bbbbbbbbbbbbbbbbb"]
+private_subnet_ids = ["subnet-ccccccccccccccccc", "subnet-ddddddddddddddddd"]
+container_image    = "123456789012.dkr.ecr.us-east-1.amazonaws.com/edge-limiter:0.1.0"

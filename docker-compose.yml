@@ -1,0 +1,25 @@
+# Local stack: edge-limiter backed by Redis. `docker compose up --build`
+services:
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 1s
+      retries: 10
+
+  edge-limiter:
+    build: .
+    command: ["-config", "/etc/edge-limiter/compose.yaml"]
+    environment:
+      EDGE_LIMITER_LOG_LEVEL: info
+    volumes:
+      - ./configs/compose.yaml:/etc/edge-limiter/compose.yaml:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
